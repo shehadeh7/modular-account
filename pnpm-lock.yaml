@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@erc6900/reference-implementation':
-        specifier: github:erc6900/reference-implementation#v0.8.0
+        specifier: https://github.com/erc6900/reference-implementation#v0.8.0
         version: https://codeload.github.com/erc6900/reference-implementation/tar.gz/c9b256cfd963a655179fa3cd9ea3f92c73cbfcdd
       account-abstraction:
-        specifier: github:eth-infinitism/account-abstraction#v0.7.0
-        version: accountabstraction@git+https://git@github.com:eth-infinitism/account-abstraction.git#d99245ddb2d7bde4d2132757c4394818f1d11da0(ethers@5.7.2)(hardhat@2.22.10(typescript@4.9.5))(lodash@4.17.21)(typechain@5.2.0(typescript@4.9.5))
+        specifier: https://github.com/eth-infinitism/account-abstraction#v0.7.0
+        version: accountabstraction@https://codeload.github.com/eth-infinitism/account-abstraction/tar.gz/d99245ddb2d7bde4d2132757c4394818f1d11da0(ethers@5.7.2)(hardhat@2.22.10(typescript@4.9.5))(lodash@4.17.21)(typechain@5.2.0(typescript@4.9.5))
       solady:
-        specifier: github:Vectorized/solady#v0.0.237
-        version: git+https://git@github.com:Vectorized/solady.git#eb227ea1c5eaa56296e7dd713eb165d5d75891dd
+        specifier: https://github.com/Vectorized/solady#v0.0.237
+        version: https://codeload.github.com/Vectorized/solady/tar.gz/eb227ea1c5eaa56296e7dd713eb165d5d75891dd
     devDependencies:
       pnpm:
         specifier: ^9.15.0
@@ -382,8 +382,8 @@ packages:
   abbrev@1.0.9:
     resolution: {integrity: sha512-LEyx4aLEC3x6T0UguF6YILf+ntvmOaWsVfENmIW0E9H09vKlLDGelMjjSm0jkDHALj8A8quZ/HapKNigzwge+Q==}
 
-  accountabstraction@git+https://git@github.com:eth-infinitism/account-abstraction.git#d99245ddb2d7bde4d2132757c4394818f1d11da0:
-    resolution: {commit: d99245ddb2d7bde4d2132757c4394818f1d11da0, repo: git@github.com:eth-infinitism/account-abstraction.git, type: git}
+  accountabstraction@https://codeload.github.com/eth-infinitism/account-abstraction/tar.gz/d99245ddb2d7bde4d2132757c4394818f1d11da0:
+    resolution: {tarball: https://codeload.github.com/eth-infinitism/account-abstraction/tar.gz/d99245ddb2d7bde4d2132757c4394818f1d11da0}
     version: 0.7.0
 
   adm-zip@0.4.16:
@@ -1521,8 +1521,8 @@ packages:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
 
-  solady@git+https://git@github.com:Vectorized/solady.git#eb227ea1c5eaa56296e7dd713eb165d5d75891dd:
-    resolution: {commit: eb227ea1c5eaa56296e7dd713eb165d5d75891dd, repo: git@github.com:Vectorized/solady.git, type: git}
+  solady@https://codeload.github.com/Vectorized/solady/tar.gz/eb227ea1c5eaa56296e7dd713eb165d5d75891dd:
+    resolution: {tarball: https://codeload.github.com/Vectorized/solady/tar.gz/eb227ea1c5eaa56296e7dd713eb165d5d75891dd}
     version: 0.0.237
 
   solc@0.8.26:
@@ -2343,7 +2343,7 @@ snapshots:
 
   abbrev@1.0.9: {}
 
-  accountabstraction@git+https://git@github.com:eth-infinitism/account-abstraction.git#d99245ddb2d7bde4d2132757c4394818f1d11da0(ethers@5.7.2)(hardhat@2.22.10(typescript@4.9.5))(lodash@4.17.21)(typechain@5.2.0(typescript@4.9.5)):
+  accountabstraction@https://codeload.github.com/eth-infinitism/account-abstraction/tar.gz/d99245ddb2d7bde4d2132757c4394818f1d11da0(ethers@5.7.2)(hardhat@2.22.10(typescript@4.9.5))(lodash@4.17.21)(typechain@5.2.0(typescript@4.9.5)):
     dependencies:
       '@nomiclabs/hardhat-etherscan': 2.1.8(hardhat@2.22.10(typescript@4.9.5))
       '@openzeppelin/contracts': 5.0.2
@@ -3665,7 +3665,7 @@ snapshots:
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
 
-  solady@git+https://git@github.com:Vectorized/solady.git#eb227ea1c5eaa56296e7dd713eb165d5d75891dd: {}
+  solady@https://codeload.github.com/Vectorized/solady/tar.gz/eb227ea1c5eaa56296e7dd713eb165d5d75891dd: {}
 
   solc@0.8.26(debug@4.3.6):
     dependencies:
