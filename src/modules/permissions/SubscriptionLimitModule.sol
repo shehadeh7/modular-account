@@ -300,18 +300,14 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         // No configuration => allow (no policy)
         if (t.merchant == address(0)) return;
 
+        // Deterministic checks
         if (t.paused) revert PausedErr();
-        if (t.validUntil != 0 && block.timestamp > t.validUntil) revert Expired();
         if (t.token != token) revert WrongToken();
 
-        // Simulate rollover without writing
-        uint256 spent = t.spentInPeriod;
-        if (t.periodSecs != 0 && block.timestamp >= t.periodStart + t.periodSecs) {
-            spent = 0;
-        }
-
-        uint256 remaining = t.maxPerPeriod > spent ? (t.maxPerPeriod - spent) : 0;
-        if (amount > remaining) revert ExceedsCap();
+        // Check against max cap (not current spent)
+        // This ensures no false negatives - if amount fits in ANY period, it passes
+        // The execution hook enforces the actual per-period accounting
+        if (amount > t.maxPerPeriod) revert ExceedsCap();
     }
 
     // ------------------------------------------------------------
