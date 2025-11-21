@@ -13,6 +13,8 @@ import {ExecutionInstallDelegate} from "../src/helpers/ExecutionInstallDelegate.
 import {AllowlistModule} from "../src/modules/permissions/AllowlistModule.sol";
 import {NativeTokenLimitModule} from "../src/modules/permissions/NativeTokenLimitModule.sol";
 import {PaymasterGuardModule} from "../src/modules/permissions/PaymasterGuardModule.sol";
+
+import {SubscriptionLimitModule} from "../src/modules/permissions/SubscriptionLimitModule.sol";
 import {TimeRangeModule} from "../src/modules/permissions/TimeRangeModule.sol";
 import {SingleSignerValidationModule} from "../src/modules/validation/SingleSignerValidationModule.sol";
 import {WebAuthnValidationModule} from "../src/modules/validation/WebAuthnValidationModule.sol";
@@ -133,6 +135,14 @@ abstract contract Artifacts {
 
     function _deployNativeTokenLimitModule(bytes32 salt) internal returns (address) {
         return address(new NativeTokenLimitModule{salt: salt}());
+    }
+
+    function _getSubscriptionLimitModuleInitcode() internal pure returns (bytes memory) {
+        return type(SubscriptionLimitModule).creationCode;
+    }
+
+    function _deploySubscriptionLimitModule(bytes32 salt) internal returns (address) {
+        return address(new SubscriptionLimitModule{salt: salt}());
     }
 
     function _getPaymasterGuardModuleInitcode() internal pure returns (bytes memory) {
