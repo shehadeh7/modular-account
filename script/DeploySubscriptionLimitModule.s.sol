@@ -8,6 +8,7 @@ import {ScriptBase} from "./ScriptBase.sol";
 
 // Deploys all standalone contracts.
 // Modules:
+// source .env file to set expected addresses and salts
 // - SubscriptionLimitModule
 contract DeploySubscriptionLimitModuleScript is ScriptBase, Artifacts {
     address public subscriptionLimitModuleAddr;

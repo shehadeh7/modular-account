@@ -32,8 +32,9 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         uint48 periodStart;
     }
 
-    /// limits[entityId][account][merchant] => Terms
+    /// limits[entityId][merchant][account] => Terms
     mapping(uint256 => mapping(address => mapping(address => Terms))) public limits;
+    // in this mapping (merchant accounts to accounts)
 
     event Configured(
         uint32 indexed entityId,
@@ -59,6 +60,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
     error PausedErr();
     error Expired();
     error ExceedsCap();
+    error Unauthorized();
 
     // ─────────────────────────────────────────────────────────────────────
     // Installation / Uninstallation (called by the account)
@@ -78,7 +80,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         ) = abi.decode(data, (uint32, address, address, uint256, uint48, uint48, bool));
 
         address account = msg.sender;
-        Terms storage t = limits[entityId][account][merchant];
+        Terms storage t = limits[entityId][merchant][account];
         t.token = token;
         t.merchant = merchant;
         t.maxPerPeriod = maxPerPeriod;
@@ -97,7 +99,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
     /// @param data abi.encode(uint32 entityId, address merchant)
     function onUninstall(bytes calldata data) external override {
         (uint32 entityId, address merchant) = abi.decode(data, (uint32, address));
-        delete limits[entityId][msg.sender][merchant];
+        delete limits[entityId][merchant][msg.sender];
         // Optional: emit an event if you want to track removals
     }
 
@@ -116,7 +118,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         (uint32 entityId, address merchant, uint256 cap, uint48 periodSecs, uint48 validUntil) =
             abi.decode(data, (uint32, address, uint256, uint48, uint48));
 
-        Terms storage t = limits[entityId][msg.sender][merchant];
+        Terms storage t = limits[entityId][merchant][msg.sender];
         if (t.merchant != merchant) revert NoSubscription();
 
         t.maxPerPeriod = cap;
@@ -130,7 +132,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
     function setPaused(bytes calldata data) external {
         (uint32 entityId, address merchant, bool paused) = abi.decode(data, (uint32, address, bool));
 
-        Terms storage t = limits[entityId][msg.sender][merchant];
+        Terms storage t = limits[entityId][merchant][msg.sender];
         if (t.merchant != merchant) revert NoSubscription();
 
         t.paused = paused;
@@ -214,7 +216,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
             outerSel := calldataload(cd.offset)
         }
         if (outerSel != ModularAccountBase.executeUserOp.selector) {
-            return; // ignore or revert by policy
+            revert Unauthorized();
         }
 
         // Inner call is packed immediately after 4 bytes (tests use encodePacked)
@@ -230,6 +232,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
             (address to, uint256 value, bytes memory callData) = abi.decode(inner[4:], (address, uint256, bytes));
             (bool ok, address merchant, address token, uint256 amount,) = _decodePaymentIntent(to, value, callData);
             if (ok) _validatePaymentIntentView(entityId, userOp.sender, merchant, token, amount);
+            else revert Unauthorized();
         } else if (innerSel == IModularAccount.executeBatch.selector) {
             (Call[] memory calls) = abi.decode(inner[4:], (Call[]));
             for (uint256 i = 0; i < calls.length; ++i) {
@@ -240,7 +243,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         } else if (innerSel == ModularAccountBase.performCreate.selector) {
             // ignore
         } else {
-            return;
+            revert Unauthorized();
         }
     }
 
@@ -295,7 +298,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
         address token,
         uint256 amount
     ) internal view {
-        Terms storage t = limits[entityId][account][merchant];
+        Terms storage t = limits[entityId][merchant][account];
 
         // No configuration => allow (no policy)
         if (t.merchant == address(0)) return;
@@ -317,7 +320,7 @@ contract SubscriptionLimitModule is ModuleBase, IExecutionHookModule, IValidatio
     function _applyPaymentIntent(uint32 entityId, address account, address merchant, address token, uint256 amount)
         internal
     {
-        Terms storage t = limits[entityId][account][merchant];
+        Terms storage t = limits[entityId][merchant][account];
 
         // Not configured => allow
         if (t.merchant == address(0)) return;
